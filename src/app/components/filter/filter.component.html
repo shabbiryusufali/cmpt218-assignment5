@@ -1,0 +1,29 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            Filter Table
+        </mat-card-title>
+    </mat-card-header>
+    <br>
+    <form>
+        <mat-radio-group name="locationFilter" aria-label="Select an location">
+            <mat-radio-button class="locationRadio" value="canada"> Display Country Total </mat-radio-button>
+            <mat-radio-button class="locationRadio" value="prov"> Display Provinces </mat-radio-button>
+            <mat-radio-button class="locationRadio" value="hr"> Display Health Regions </mat-radio-button>
+        </mat-radio-group>
+        <br>
+        <br>
+        <mat-slide-toggle name="cas" class="displayOption">New Cases</mat-slide-toggle><br>
+        <mat-slide-toggle name="dea" class="displayOption">New Deaths</mat-slide-toggle><br>
+        <mat-slide-toggle name="rec" class="displayOption">New Recovered</mat-slide-toggle><br>
+        <mat-slide-toggle name="c_cas" class="displayOption">Cumulative Cases</mat-slide-toggle><br>
+        <mat-slide-toggle name="c_dea" class="displayOption">Cumulative Deaths</mat-slide-toggle><br>
+        <mat-slide-toggle name="c_rec" class="displayOption">Cumulative Recovered</mat-slide-toggle><br>
+        <br>
+        <button id="sub-btn" mat-raised-button matTooltip="Submit the filter options for the table below" aria-label="Button used to submit the filter data">
+            Submit
+        </button>
+    </form>
+
+</mat-card>
+<br>
