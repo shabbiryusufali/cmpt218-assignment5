@@ -9,6 +9,7 @@ import { GraphComponent } from './components/graph/graph.component';
 import { MaterialModule } from './material/material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { RouterModule } from '@angular/router';
     MaterialModule,
     HttpClientModule,
     RouterModule,
+    MatNativeDateModule,
     RouterModule.forRoot([])
   ],
   providers: [],

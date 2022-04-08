@@ -31,6 +31,10 @@
         <th mat-sort-header mat-header-cell *matHeaderCellDef>Cumulative Recovered</th>
         <td mat-cell *matCellDef="let covidData"> {{covidData.cumulative_recovered}} </td>
     </ng-container>
+    <ng-container matColumnDef="active-cases">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef>Active Cases</th>
+        <td mat-cell *matCellDef="let covidData"> {{covidData.active_cases}} </td>
+    </ng-container>
 
 
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
