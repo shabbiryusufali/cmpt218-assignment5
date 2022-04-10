@@ -70,7 +70,9 @@ export class TableComponent implements OnInit, AfterViewInit {
       
     this.route.queryParams.subscribe(queryParams => {
       if(queryParams){
-        console.log("asdf")
+        console.log('printing locationFilter...')
+        console.log(queryParams['locationFilter'])
+        console.log('... printed')
       }
       {
       console.log(queryParams);
@@ -122,18 +124,21 @@ export class TableComponent implements OnInit, AfterViewInit {
       }
       console.log(JSONParams.locationFilter);
       if(JSONParams.locationFilter){
-      if(JSONParams.locationFilter == 'canada'){
-        this.countryTotal = true;
-        console.log("canada");
-      } else if(JSONParams.locationFilter == "hr"){
-        this.showHealthRegion = true;
-        console.log("hr");
-      } else if (JSONParams.locationFilter == "prov"){
-        this.showProvince = true;
-        console.log("prov");
-      } } else{
-        this.showProvince = true;
-
+        if(JSONParams.locationFilter == 'canada'){
+          this.countryTotal = true;
+          console.log("canada");
+        } else if(JSONParams.locationFilter == "hr"){
+          this.showHealthRegion = true;
+          console.log("hr");
+        } else if (JSONParams.locationFilter == "prov"){
+          this.showProvince = true;
+          console.log("prov");
+        }  
+      } else{
+        if(!JSONParams.locationFilter){
+          this.showProvince = true;
+          console.log('nullJSONObject');
+        }
       }
       
 
