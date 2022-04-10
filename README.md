@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 # CMPT218-Assignment5
+=======
+# CovidTracker
+>>>>>>> db53ea0b8b99c31b0d016e5055ea23e3b121f207
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.0.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.1.
 
 ## Development server
 
