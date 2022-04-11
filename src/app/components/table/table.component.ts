@@ -63,11 +63,11 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.useRange = false;
     this.showActive = false;
 
-    
+
     var searchQuery:string = "";
 
     this.getParams();
-      
+
     this.route.queryParams.subscribe(queryParams => {
       if(queryParams){
         console.log('printing locationFilter...')
@@ -133,14 +133,17 @@ export class TableComponent implements OnInit, AfterViewInit {
         } else if (JSONParams.locationFilter == "prov"){
           this.showProvince = true;
           console.log("prov");
-        }  
+        }  else if (JSONParams.locationFilter == ""){
+            this.showProvince = true;
+            console.log("prov");
+        }
       } else{
         if(!JSONParams.locationFilter){
           this.showProvince = true;
           console.log('nullJSONObject');
         }
       }
-      
+
 
 
     let locationFilter:string = "";
@@ -180,7 +183,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       if(this.showDeaths){
         this.columnsToDisplay.push('new-cases');
       }
-      
+
       if(!this.showC_Cases && !this.showC_Deaths && !this.showC_Recovered && !this.showCases && !this.showDeaths && !this.showRecovered){
         this.columnsToDisplay.push('new-cases', 'new-deaths', 'cumulative-cases');
       }
@@ -205,7 +208,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       if(this.showRecovered){
         this.columnsToDisplay.push('new-recovered');
       }
-      
+
       if(this.showC_Cases){
         this.columnsToDisplay.push('cumulative-cases');
       }
@@ -215,7 +218,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       if(this.showC_Recovered){
         this.columnsToDisplay.push('cumulative-recovered');
       }
-      
+
       if(!this.showC_Cases && !this.showC_Deaths && !this.showC_Recovered && !this.showCases && !this.showDeaths && !this.showRecovered &&!this.showActive){
         this.columnsToDisplay.push('new-cases', 'new-deaths', 'new-recovered',  'cumulative-cases', 'active-cases');
       }
@@ -240,7 +243,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       if(this.showRecovered){
         this.columnsToDisplay.push('new-recovered');
       }
-      
+
       if(this.showC_Cases){
         this.columnsToDisplay.push('cumulative-cases');
       }
@@ -306,7 +309,7 @@ export class TableComponent implements OnInit, AfterViewInit {
                 entry.active_cases = element.active_cases;
               }
               x = true;
-            } 
+            }
           })
           if(x == false){
           let newElement: covidElement = {
@@ -336,7 +339,7 @@ ngAfterContentInit():void {
 
 }
 
-  ngOnInit() : void{   
+  ngOnInit() : void{
 }
   refresh() {
     this.dataSource.data = this.dataSource.data;
