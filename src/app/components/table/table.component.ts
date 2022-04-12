@@ -4,8 +4,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { ActivatedRoute } from '@angular/router';
-import { formatDate } from '@angular/common';
-
+import { HistoryService } from 'src/app/services/history.service';
+import {CovidDataService} from '../../services/covid-data.service';
 
 interface covidElement {
   province:string | null;
@@ -29,28 +29,27 @@ const COVID_DATA:covidElement[] = [];
 })
 
 export class TableComponent implements OnInit, AfterViewInit {
-  countryTotal:boolean
-  showProvince:boolean;
-  showHealthRegion:boolean;
-  showCases:boolean;
-  showDeaths:boolean;
-  showRecovered:boolean;
-  showC_Cases:boolean;
-  showC_Deaths:boolean;
-  showC_Recovered:boolean;
-  todayDate:string = formatDate(new Date(), 'yyyy-MM-dd', 'en');
-  useRange: boolean;
-  date: string | undefined;
-  showActive: boolean;
-  startDate: string | undefined ;
-  endDate: string | undefined ;
-;
 
-  columnsToDisplay:string[] = [];
+
+  columnsToDisplay:string[] = ['province'];
   dataSource = new MatTableDataSource(COVID_DATA);
+  countryTotal: boolean;
+  showProvince: boolean;
+  showHealthRegion: boolean;
+  showRecovered: boolean;
+  showC_Cases: boolean;
+  showDeaths: boolean;
+  showC_Deaths: boolean;
+  showC_Recovered: boolean;
+  showCases: boolean;
+  useRange: boolean;
+  showActive: boolean;
+  dateDisplay: string | undefined;
 
-   constructor( private http: HttpClient, private _liveAnnouncer: LiveAnnouncer, private route: ActivatedRoute,) {
-    console.log(this.todayDate)
+   constructor( private dataService: CovidDataService, private http: HttpClient, private _liveAnnouncer: LiveAnnouncer, private route: ActivatedRoute,) {
+
+  this.dateDisplay = dataService.date
+
     this.countryTotal = false;
     this.showProvince = false;
     this.showHealthRegion = false;
@@ -63,16 +62,14 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.useRange = false;
     this.showActive = false;
 
-    
-    var searchQuery:string = "";
 
-    this.getParams();
-      
+
     this.route.queryParams.subscribe(queryParams => {
       if(queryParams){
-        console.log("asdf")
+        console.log('printing locationFilter...')
+        console.log(queryParams['locationFilter'])
+        console.log('... printed')
       }
-      {
       console.log(queryParams);
       let stringOfParams = JSON.stringify(queryParams);
       let JSONParams = JSON.parse(stringOfParams);
@@ -108,89 +105,12 @@ export class TableComponent implements OnInit, AfterViewInit {
         this.showActive = true;
         console.log(this.showActive);
       }
-      if(JSONParams.start_date){
-        this.startDate = JSONParams.start_date;
-        console.log(this.startDate);
-      }
-      if(JSONParams.end_date){
-        this.endDate = JSONParams.end_date;
-        console.log(this.endDate);
-      }
-      if(JSONParams.date){
-        this.date = JSONParams.date;
-        console.log(this.date);
-      }
-      console.log(JSONParams.locationFilter);
-      if(JSONParams.locationFilter){
-      if(JSONParams.locationFilter == 'canada'){
-        this.countryTotal = true;
-        console.log("canada");
-      } else if(JSONParams.locationFilter == "hr"){
-        this.showHealthRegion = true;
-        console.log("hr");
-      } else if (JSONParams.locationFilter == "prov"){
-        this.showProvince = true;
-        console.log("prov");
-      } } else{
-        this.showProvince = true;
-
-      }
-      
 
 
-    let locationFilter:string = "";
-    console.log(locationFilter)
-    if(this.countryTotal){
-      locationFilter = "countryTotal";
-      console.log(locationFilter)
-    } else if(this.showHealthRegion) {
-      locationFilter = "healthRegion";
-      console.log(locationFilter)
-    } else if(this.showProvince){
-      locationFilter = "provinceFilter";
-      console.log(locationFilter)
-    }
-    if(locationFilter == "healthRegion"){
-      searchQuery = `https://api.opencovid.ca/summary?loc=hr`;
-      console.log(this.startDate)
-      if(this.startDate){
-        searchQuery = searchQuery + `&after=${this.startDate}`;
+      if(JSONParams.locationFilter == 'hr'){
+        this.columnsToDisplay.push('region')
       }
-      if(this.endDate){
-        searchQuery = searchQuery + `&before=${this.endDate}`;
-      }
-      if(!this.useRange && this.date){
-        searchQuery = searchQuery + `&date=${this.date}`
-      }
-      this.columnsToDisplay = ['province','region'];
-      if(this.showC_Cases){
-        this.columnsToDisplay.push('cumulative-cases');
-      }
-      if(this.showC_Deaths){
-        this.columnsToDisplay.push('cumulative-deaths');
-      }
-      if(this.showCases){
-        this.columnsToDisplay.push('new-cases');
-      }
-      if(this.showDeaths){
-        this.columnsToDisplay.push('new-cases');
-      }
-      
-      if(!this.showC_Cases && !this.showC_Deaths && !this.showC_Recovered && !this.showCases && !this.showDeaths && !this.showRecovered){
-        this.columnsToDisplay.push('new-cases', 'new-deaths', 'cumulative-cases');
-      }
-    } else if (locationFilter == "countryTotal") {
-      searchQuery = `https://api.opencovid.ca/summary?loc=canada`;
-      if(this.startDate){
-        searchQuery = searchQuery + `&after=${this.startDate}`;
-      }
-      if(this.endDate){
-        searchQuery = searchQuery + `&before=${this.endDate}`;
-      }
-      if(!this.useRange && this.date){
-        searchQuery = searchQuery + `&date=${this.date}`
-      }
-      this.columnsToDisplay = ['province'];
+
       if(this.showCases){
         this.columnsToDisplay.push('new-cases');
       }
@@ -200,42 +120,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       if(this.showRecovered){
         this.columnsToDisplay.push('new-recovered');
       }
-      
-      if(this.showC_Cases){
-        this.columnsToDisplay.push('cumulative-cases');
-      }
-      if(this.showC_Deaths){
-        this.columnsToDisplay.push('cumulative-deaths');
-      }
-      if(this.showC_Recovered){
-        this.columnsToDisplay.push('cumulative-recovered');
-      }
-      
-      if(!this.showC_Cases && !this.showC_Deaths && !this.showC_Recovered && !this.showCases && !this.showDeaths && !this.showRecovered &&!this.showActive){
-        this.columnsToDisplay.push('new-cases', 'new-deaths', 'new-recovered',  'cumulative-cases', 'active-cases');
-      }
-    } else if (locationFilter == "provinceFilter"){
-      searchQuery = `https://api.opencovid.ca/summary?loc=prov`
-      if(this.startDate){
-        searchQuery = searchQuery + `&after=${this.startDate}`;
-      }
-      if(this.endDate){
-        searchQuery = searchQuery + `&before=${this.endDate}`;
-      }
-      if(!this.useRange && this.date){
-        searchQuery = searchQuery + `&date=${this.date}`
-      }
-      this.columnsToDisplay = ['province'];
-      if(this.showCases){
-        this.columnsToDisplay.push('new-cases');
-      }
-      if(this.showDeaths){
-        this.columnsToDisplay.push('new-deaths');
-      }
-      if(this.showRecovered){
-        this.columnsToDisplay.push('new-recovered');
-      }
-      
+
       if(this.showC_Cases){
         this.columnsToDisplay.push('cumulative-cases');
       }
@@ -248,93 +133,19 @@ export class TableComponent implements OnInit, AfterViewInit {
       if(this.showActive){
         this.columnsToDisplay.push('active-cases');
       }
-      if(!this.showC_Cases && !this.showC_Deaths && !this.showC_Recovered && !this.showCases && !this.showDeaths && !this.showRecovered &&!this.showActive){
-        this.columnsToDisplay.push('new-cases', 'new-deaths', 'new-recovered',  'cumulative-cases', 'active-cases');
-      }
-    }
-    console.log(searchQuery);
-    this.generateValues(searchQuery);
-  }
-  })
+
+    })
+
 
   }
 
-  private generateValues(searchQuery: string) {
-    this.http.get<Object>(searchQuery).subscribe(
-      (data: Object) => {
-        console.log(data);
-        let dataAsString: string = JSON.stringify(data);
-        let JSONData = JSON.parse(dataAsString);
-        console.log(JSONData.summary);
-        let summaryOfData = JSONData.summary;
-        console.log(summaryOfData);
-        summaryOfData.forEach((element: {
-          health_region: string | null; province: string | null; cases: number | null; deaths: number | null; recovered: number | null;
-          cumulative_cases: number | null; cumulative_deaths: number | null; cumulative_recovered: number | null; active_cases: number | null ;
-        }) => {
-          let x = false;
-          this.dataSource.data.forEach(entry=>{
-            if(entry.province == element.province && element.health_region == entry.region){
-              console.log(entry.province)
-              console.log(element.province)
-              console.log(element.health_region)
-              console.log(entry.region)
-              if(element.cases && entry.new_cases){
-                entry.new_cases += element.cases
-              }
-              if(element.deaths && entry.new_deaths){
-                entry.new_deaths += element.deaths
-              }
-              if(element.recovered && entry.new_recovered){
-                entry.new_recovered += element.recovered
-              }
-              if(element.cumulative_cases && entry.cumulative_cases){
-                entry.cumulative_cases = element.cumulative_cases
-              }
-              if(element.cumulative_deaths && entry.cumulative_deaths){
-                entry.cumulative_deaths = element.cumulative_deaths
-              }
-              if(element.cumulative_recovered && entry.cumulative_recovered){
-                entry.cumulative_recovered = element.cumulative_recovered
-              }
-              if(element.active_cases && entry.active_cases){
-                entry.active_cases = element.active_cases;
-              }
-              x = true;
-            } 
-          })
-          if(x == false){
-          let newElement: covidElement = {
-            province: element.province,
-            region: element.health_region,
-            new_cases: element.cases,
-            new_deaths: element.deaths,
-            new_recovered: element.recovered,
-            cumulative_cases: element.cumulative_cases,
-            cumulative_deaths: element.cumulative_deaths,
-            cumulative_recovered: element.cumulative_recovered,
-            active_cases: element.active_cases
-          };
-          console.log(newElement);
-          this.dataSource.data.push(newElement);
-          }
-          console.log(this.dataSource.data.length);
-          this.refresh();
-
-        });
-
-      }
-    );
-  }
 
 ngAfterContentInit():void {
 
 }
 
-  ngOnInit() : void{   
-}
-  refresh() {
-    this.dataSource.data = this.dataSource.data;
+  ngOnInit() : void{
+    this.dataSource = this.dataService.getData();
   }
 
   @ViewChild(MatSort)

@@ -10,6 +10,7 @@ import { MaterialModule } from './material/material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { MatNativeDateModule } from '@angular/material/core';
+import { HistoryComponent } from './components/history/history.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     FilterComponent,
     TableComponent,
     HeadingComponent,
-    GraphComponent
+    GraphComponent,
+    HistoryComponent
   ],
   imports: [
     BrowserModule,
